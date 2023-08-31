@@ -73,6 +73,9 @@ type assembly struct {
 	Total           int          `xml:"total,attr"`
 	Collections     []collection `xml:"collection"`
 	ErrorSet        errorSet     `xml:"errors"`
+
+	// Calculated fields.
+	testMap map[string][]TestCase // A map that contains all the tests of the assembly, grouped by trait.
 }
 
 // A collection contains information about the run of a single test collection.
@@ -251,7 +254,7 @@ func (assembly *assembly) groupTests() []*TestGroup {
 		cGroup := &TestGroup{Name: trait}
 		resultSet = append(resultSet, cGroup)
 
-		for _, tc := range assembly.testsWithTrait(trait) {
+		for _, tc := range assembly.testMap[trait] {
 			if tc.hasDisplayName() || !tc.isNested() {
 				cGroup.Tests = append(cGroup.Tests, TestCase{Name: tc.Name, Result: tc.Result})
 			} else {
@@ -302,37 +305,23 @@ func (assembly *assembly) uniqueTraits() []string {
 	resultSet := make([]string, 0)
 	resultSet = append(resultSet, "")
 
+	assembly.testMap = make(map[string][]TestCase)
+
 	for _, collection := range assembly.Collections {
 		for _, t := range collection.Tests {
+			if len(t.TraitSet.Traits) == 0 {
+				assembly.testMap[""] = append(assembly.testMap[""], TestCase{Name: t.Name, Result: t.Result})
+			}
+
 			for _, tTrait := range t.TraitSet.Traits {
 				traitName := fmt.Sprintf("%s - %s", tTrait.Name, tTrait.Value)
+
+				assembly.testMap[traitName] = append(assembly.testMap[traitName], TestCase{Name: t.Name, Result: t.Result})
 
 				if !slices.Contains(resultSet, traitName) {
 					resultSet = append(resultSet, traitName)
 				}
 			}
-		}
-	}
-
-	return resultSet
-}
-
-// Returns all the tests of the assembly that belong to a given trait.
-func (assembly *assembly) testsWithTrait(traitName string) []TestCase {
-	resultSet := make([]TestCase, 0)
-
-	for _, collection := range assembly.Collections {
-		for _, t := range collection.Tests {
-			if traitName == "" && len(t.TraitSet.Traits) == 0 {
-				resultSet = append(resultSet, TestCase{Name: t.Name, Result: t.Result})
-			} else {
-				for _, tTrait := range t.TraitSet.Traits {
-					if fmt.Sprintf("%s - %s", tTrait.Name, tTrait.Value) == traitName {
-						resultSet = append(resultSet, TestCase{Name: t.Name, Result: t.Result})
-					}
-				}
-			}
-
 		}
 	}
 
