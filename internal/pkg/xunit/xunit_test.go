@@ -72,7 +72,7 @@ func TestLoad(t *testing.T) {
 						RunDate:     "07/10/2023",
 						RunTime:     "20:53:19",
 						Time:        "2000-12-01",
-						Tests:       make(map[string][]*xunit.TestGroup),
+						Tests:       make([]*xunit.TestGroup, 0),
 					},
 				},
 			},
@@ -137,54 +137,53 @@ func TestLoad(t *testing.T) {
 						RunDate:     "07/10/2023",
 						RunTime:     "20:53:19",
 						Time:        "2000-12-01",
-						Tests: map[string][]*xunit.TestGroup{
-							"": {
-								{
-									Tests: []xunit.TestCase{
-										{
-											Name:   "A test with a display name.",
-											Result: "Pass",
-										},
-										{
-											Name:   "NS1.Class.SubClass.TestClass.TestMethod",
-											Result: "Fail",
-										},
+						Tests: []*xunit.TestGroup{
+							{
+								Name: "",
+								Tests: []xunit.TestCase{
+									{
+										Name:   "A test with a display name.",
+										Result: "Pass",
 									},
-									Groups: []*xunit.TestGroup{
-										{
-											Name:  "TestClass",
-											Tests: nil,
-											Groups: []*xunit.TestGroup{
-												{
-													Name:  "Method",
-													Tests: nil,
-													Groups: []*xunit.TestGroup{
-														{
-															Name:  "Scenario",
-															Tests: nil,
-															Groups: []*xunit.TestGroup{
-																{
-																	Name: "SubScenario",
-																	Tests: []xunit.TestCase{
-																		{
-																			Name:   "NS1.Class.SubClass.TestClass+Method+Scenario+SubScenario.Result",
-																			Result: "Pass",
-																		},
+									{
+										Name:   "NS1.Class.SubClass.TestClass.TestMethod",
+										Result: "Fail",
+									},
+								},
+								Groups: []*xunit.TestGroup{
+									{
+										Name:  "TestClass",
+										Tests: nil,
+										Groups: []*xunit.TestGroup{
+											{
+												Name:  "Method",
+												Tests: nil,
+												Groups: []*xunit.TestGroup{
+													{
+														Name:  "Scenario",
+														Tests: nil,
+														Groups: []*xunit.TestGroup{
+															{
+																Name: "SubScenario",
+																Tests: []xunit.TestCase{
+																	{
+																		Name:   "NS1.Class.SubClass.TestClass+Method+Scenario+SubScenario.Result",
+																		Result: "Pass",
 																	},
 																},
 															},
 														},
-														{
-															Name:  "Scenario2",
-															Tests: nil,
-															Groups: []*xunit.TestGroup{
-																{
-																	Name: "SubScenario",
-																	Tests: []xunit.TestCase{
-																		{
-																			Name:   "NS1.Class.SubClass.TestClass+Method+Scenario2+SubScenario.Result",
-																			Result: "Pass",
-																		},
+													},
+													{
+														Name:  "Scenario2",
+														Tests: nil,
+														Groups: []*xunit.TestGroup{
+															{
+																Name: "SubScenario",
+																Tests: []xunit.TestCase{
+																	{
+																		Name:   "NS1.Class.SubClass.TestClass+Method+Scenario2+SubScenario.Result",
+																		Result: "Pass",
 																	},
 																},
 															},
@@ -196,27 +195,25 @@ func TestLoad(t *testing.T) {
 									},
 								},
 							},
-							"Category - Unit": {
-								{
-									Tests: []xunit.TestCase{
-										{
-											Name:   "A test with a display name (with a trait).",
-											Result: "Pass",
-										},
-										{
-											Name:   "A test with a display name (with multiple traits).",
-											Result: "Pass",
-										},
+							{
+								Name: "Category - Unit",
+								Tests: []xunit.TestCase{
+									{
+										Name:   "A test with a display name (with a trait).",
+										Result: "Pass",
+									},
+									{
+										Name:   "A test with a display name (with multiple traits).",
+										Result: "Pass",
 									},
 								},
 							},
-							"Timing - Slow": {
-								{
-									Tests: []xunit.TestCase{
-										{
-											Name:   "A test with a display name (with multiple traits).",
-											Result: "Pass",
-										},
+							{
+								Name: "Timing - Slow",
+								Tests: []xunit.TestCase{
+									{
+										Name:   "A test with a display name (with multiple traits).",
+										Result: "Pass",
 									},
 								},
 							},

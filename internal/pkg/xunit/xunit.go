@@ -155,16 +155,16 @@ type TestRun struct {
 // Assembly contains information about the run of a single test assembly.
 // This includes environmental information.
 type Assembly struct {
-	Name        string                  // The full name of the assembly.
-	ErrorCount  int                     // The total number of environmental errors experienced in the assembly.
-	PassedCount int                     // The total number of test cases in the assembly which passed.
-	FailedCount int                     // The total number of test cases in the assembly which failed.
-	NotRunCount int                     // The total number of test cases that weren't run.
-	TotalCount  int                     // The total number of test cases in the assembly.
-	RunDate     string                  // The date when the test run started.
-	RunTime     string                  // The time when the test run started.
-	Time        string                  // The time spent running the tests in the assembly.
-	Tests       map[string][]*TestGroup // All the tests of the assembly, grouped by trait.
+	Name        string       // The full name of the assembly.
+	ErrorCount  int          // The total number of environmental errors experienced in the assembly.
+	PassedCount int          // The total number of test cases in the assembly which passed.
+	FailedCount int          // The total number of test cases in the assembly which failed.
+	NotRunCount int          // The total number of test cases that weren't run.
+	TotalCount  int          // The total number of test cases in the assembly.
+	RunDate     string       // The date when the test run started.
+	RunTime     string       // The time when the test run started.
+	Time        string       // The time spent running the tests in the assembly.
+	Tests       []*TestGroup // All the tests of the assembly, grouped by trait.
 }
 
 // TestGroup is a group of tests.
@@ -239,17 +239,17 @@ func (assembly *assembly) name() string {
 }
 
 // Returns a map of tests, grouped per trait of the assembly.
-func (assembly *assembly) groupTests() map[string][]*TestGroup {
+func (assembly *assembly) groupTests() []*TestGroup {
 	uniqueTraits := assembly.uniqueTraits()
-	resultSet := make(map[string][]*TestGroup, len(uniqueTraits))
+	resultSet := make([]*TestGroup, 0, len(uniqueTraits))
 
 	if !assembly.hasTests() {
 		return resultSet
 	}
 
-	for _, trait := range uniqueTraits {
-		cGroup := &TestGroup{}
-		resultSet[trait] = append(resultSet[trait], cGroup)
+	for idx, trait := range uniqueTraits {
+		cGroup := &TestGroup{Name: trait}
+		resultSet = append(resultSet, cGroup)
 
 		for _, tc := range assembly.testsWithTrait(trait) {
 			if tc.hasDisplayName() || !tc.isNested() {
@@ -278,7 +278,7 @@ func (assembly *assembly) groupTests() map[string][]*TestGroup {
 					cGroup = sGroup
 				}
 
-				cGroup = resultSet[trait][0]
+				cGroup = resultSet[idx]
 			}
 		}
 	}
