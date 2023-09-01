@@ -275,7 +275,7 @@ func TestLoad(t *testing.T) {
 func BenchmarkLoad_MultipleAssemblies(b *testing.B) {
 	xmlData := "<assemblies>\n"
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		xmlData += "  <assembly />\n"
 	}
 
@@ -292,7 +292,7 @@ func BenchmarkLoad_MultipleTraits(b *testing.B) {
 		"      <test>\n" +
 		"        <traits>\n"
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		xmlData += "		   <trait name=\"Idx\" value=\"" + strconv.Itoa(i) + "\" />\n"
 	}
 
