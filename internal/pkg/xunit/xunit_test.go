@@ -106,15 +106,15 @@ func TestLoad(t *testing.T) {
 				// NOTE: A test which has a display name (it contains spaces, and NO `+` sign), belonging to a single trait.
 				"      <test name=\"A test with a display name (with a trait).\" result=\"Pass\">\n" +
 				"        <traits>\n" +
-				"		   <trait name=\"Category\" value=\"Unit\" />\n" +
+				"          <trait name=\"Category\" value=\"Unit\" />\n" +
 				"        </traits>\n" +
 				"      </test>\n" +
 
 				// NOTE: A test which has a display name (it contains spaces, and NO `+` sign), belonging to multiple traits.
 				"      <test name=\"A test with a display name (with multiple traits).\" result=\"Pass\">\n" +
 				"        <traits>\n" +
-				"		   <trait name=\"Category\" value=\"Unit\" />\n" +
-				"		   <trait name=\"Timing\" value=\"Slow\" />\n" +
+				"          <trait name=\"Category\" value=\"Unit\" />\n" +
+				"          <trait name=\"Timing\" value=\"Slow\" />\n" +
 				"        </traits>\n" +
 				"      </test>\n" +
 				"    </collection>\n" +
