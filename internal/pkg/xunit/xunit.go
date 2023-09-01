@@ -29,7 +29,6 @@ package xunit
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io"
 	"strings"
 
@@ -312,7 +311,7 @@ func (assembly *assembly) uniqueTraits() []string {
 			}
 
 			for _, tTrait := range t.TraitSet.Traits {
-				traitName := fmt.Sprintf("%s - %s", tTrait.Name, tTrait.Value)
+				traitName := tTrait.friendlyName()
 
 				assembly.testMap[traitName] = append(assembly.testMap[traitName], TestCase{Name: t.Name, Result: t.Result})
 			}
@@ -320,6 +319,17 @@ func (assembly *assembly) uniqueTraits() []string {
 	}
 
 	return maps.SortedKeys(assembly.testMap)
+}
+
+// Returns the friendly name of the trait.
+func (t *trait) friendlyName() string {
+	var b strings.Builder
+
+	b.WriteString(t.Name)
+	b.WriteString(" - ")
+	b.WriteString(t.Value)
+
+	return b.String()
 }
 
 // Returns true if test has a display name, false otherwise.
