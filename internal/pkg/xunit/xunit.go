@@ -32,8 +32,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-
-	"github.com/kdeconinck/dtvisual/internal/pkg/slices"
 )
 
 // A result is the top-level element of the document. It's the result of a `dotnet test` operation in xUnit's v2+ XML
@@ -243,12 +241,12 @@ func (assembly *assembly) name() string {
 
 // Returns a map of tests, grouped per trait of the assembly.
 func (assembly *assembly) groupTests() []*TestGroup {
+	if !assembly.hasTests() {
+		return make([]*TestGroup, 0)
+	}
+
 	uniqueTraits := assembly.uniqueTraits()
 	resultSet := make([]*TestGroup, 0, len(uniqueTraits))
-
-	if !assembly.hasTests() {
-		return resultSet
-	}
 
 	for idx, trait := range uniqueTraits {
 		cGroup := &TestGroup{Name: trait}
@@ -302,10 +300,8 @@ func (assembly *assembly) hasTests() bool {
 
 // Returns all all the unique trait(s).
 func (assembly *assembly) uniqueTraits() []string {
-	resultSet := make([]string, 0)
-	resultSet = append(resultSet, "")
-
 	assembly.testMap = make(map[string][]TestCase)
+	assembly.testMap[""] = nil
 
 	for _, collection := range assembly.Collections {
 		for _, t := range collection.Tests {
@@ -317,15 +313,16 @@ func (assembly *assembly) uniqueTraits() []string {
 				traitName := fmt.Sprintf("%s - %s", tTrait.Name, tTrait.Value)
 
 				assembly.testMap[traitName] = append(assembly.testMap[traitName], TestCase{Name: t.Name, Result: t.Result})
-
-				if !slices.Contains(resultSet, traitName) {
-					resultSet = append(resultSet, traitName)
-				}
 			}
 		}
 	}
 
-	return resultSet
+	r := make([]string, 0, len(assembly.testMap))
+	for k := range assembly.testMap {
+		r = append(r, k)
+	}
+
+	return r
 }
 
 // Returns true if test has a display name, false otherwise.
