@@ -250,7 +250,7 @@ func (assembly *assembly) groupTests() []*TestGroup {
 	resultSet := make([]*TestGroup, 0, len(uniqueTraits))
 
 	for idx, trait := range uniqueTraits {
-		cGroup := &TestGroup{Name: trait}
+		cGroup := &TestGroup{Name: trait, Tests: make([]TestCase, 0, len(assembly.testMap[trait]))}
 		resultSet = append(resultSet, cGroup)
 
 		for _, tc := range assembly.testMap[trait] {
