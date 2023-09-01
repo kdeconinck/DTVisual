@@ -32,6 +32,8 @@ import (
 	"fmt"
 	"io"
 	"strings"
+
+	"github.com/kdeconinck/dtvisual/internal/pkg/maps"
 )
 
 // A result is the top-level element of the document. It's the result of a `dotnet test` operation in xUnit's v2+ XML
@@ -317,12 +319,7 @@ func (assembly *assembly) uniqueTraits() []string {
 		}
 	}
 
-	r := make([]string, 0, len(assembly.testMap))
-	for k := range assembly.testMap {
-		r = append(r, k)
-	}
-
-	return r
+	return maps.SortedKeys(assembly.testMap)
 }
 
 // Returns true if test has a display name, false otherwise.
