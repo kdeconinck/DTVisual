@@ -28,7 +28,6 @@ package maps_test
 
 import (
 	"reflect"
-	"slices"
 	"testing"
 
 	"github.com/kdeconinck/dtvisual/internal/pkg/assert"
@@ -50,11 +49,7 @@ func TestSortedKeys(t *testing.T) {
 		got := maps.SortedKeys(tc.input)
 
 		// ASSERT.
-		assert.EqualFn(t, got, tc.want, func(got, want []int) bool {
-			slices.Sort(got)
-
-			return reflect.DeepEqual(got, want)
-		}, "", "\n\n"+
+		assert.EqualFn(t, got, tc.want, func(got, want []int) bool { return reflect.DeepEqual(got, want) }, "", "\n\n"+
 			"UT Name:    Get the keys of a map (sorted).\n"+
 			"Input:      %v\n"+
 			"\033[32mExpected:   %v\033[0m\n"+
