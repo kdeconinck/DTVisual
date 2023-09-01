@@ -306,10 +306,39 @@ func BenchmarkLoad_MultipleTraits(b *testing.B) {
 }
 
 // Benchmark: Load an XML file containing a .NET test result.
+func BenchmarkLoad_MultipleTests_MultipleTraits(b *testing.B) {
+	xmlData := "<assemblies>\n" +
+		"  <assembly>\n" +
+		"    <collection>\n"
+
+	for tcIdx := 0; tcIdx < 100; tcIdx++ {
+		xmlData += "      <test>\n" +
+			"        <traits>\n"
+
+		for i := 0; i < 10; i++ {
+			xmlData += "		   <trait name=\"Idx\" value=\"" + strconv.Itoa(i) + "\" />\n"
+		}
+
+		xmlData += "        </traits>\n" +
+			"      </test>\n"
+	}
+
+	xmlData += "    </collection>\n" +
+		"  </assembly>\n" +
+		"</assemblies>"
+
+	benchmarkLoad(xmlData, b)
+}
+
+// Benchmark: Load an XML file containing a .NET test result.
 func benchmarkLoad(xmlData string, b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		rdr := strings.NewReader(xmlData)
 
-		_, _ = xunit.Load(rdr)
+		_, err := xunit.Load(rdr)
+
+		if err != nil {
+			panic(err)
+		}
 	}
 }
